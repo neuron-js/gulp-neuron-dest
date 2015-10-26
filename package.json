@@ -1,0 +1,28 @@
+{
+  "name": "gulp-neuron-resources",
+  "version": "1.0.0",
+  "description": "gulp-neuron-resources",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec ./test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/neuron-js/gulp-neuron-resources.git"
+  },
+  "keywords": [
+    "gulp-neuron-resources"
+  ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "author": "neuron-js",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neuron-js/gulp-neuron-resources/issues"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*"
+  }
+}
