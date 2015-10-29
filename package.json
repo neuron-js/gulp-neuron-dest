@@ -11,7 +11,9 @@
     "url": "git://github.com/neuron-js/gulp-neuron-resources.git"
   },
   "keywords": [
-    "gulp-neuron-resources"
+    "gulp",
+    "task",
+    "neuron"
   ],
   "engines": {
     "node": ">=0.10.0"
@@ -24,5 +26,12 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "*"
+  },
+  "dependencies": {
+    "absolutize-css-resources": "^1.0.9",
+    "fs-extra": "^0.26.0",
+    "gulp-util": "^3.0.7",
+    "neuron-package-root": "^1.0.2",
+    "through2": "^2.0.0"
   }
 }
