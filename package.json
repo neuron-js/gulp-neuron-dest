@@ -32,6 +32,7 @@
     "fs-extra": "^0.26.0",
     "gulp-util": "^3.0.7",
     "neuron-package-root": "^1.0.2",
-    "through2": "^2.0.0"
+    "through2": "^2.0.0",
+    "hashed-fs": "^1.1.0"
   }
 }

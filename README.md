@@ -11,7 +11,7 @@
 
 # gulp-neuron-resources
 
-<!-- description -->
+
 
 ## Install
 
@@ -22,7 +22,7 @@ $ npm install gulp-neuron-resources --save
 ## Usage
 
 ```js
-var gulp_neuron_resources = require('gulp-neuron-resources');
+var neuron_resources = require('gulp-neuron-resources');
 ```
 
 ## License
