@@ -73,29 +73,43 @@ function task (options) {
 
       // Handle css files, absolutize css images
       if (extname !== '.css') {
-        return hfs.copy(filename, dest, cb);
+        return hfs.stat(filename, function (err, stat, hash, cached) {
+          if (err) {
+            return cb(err);
+          }
+
+          // if cached, skip writeFile.
+          if (cached) {
+            return cb(null);
+          }
+
+          hfs.writeFile(dest, file.contents, cb);
+        });
       }
 
+      // Css files are special.
+      // If a css file doesn't change, but its css images changed,
+      // the path of each image should be changed.
+      // To make it simple, we always build css files
       absolutize(file.contents, {
         filename: filename,
         filebase: config.dist,
         resolve: function(path){
           var done = this.async();
           var image_source = node_path.resolve(config.dist, path);
-          var image_dest = node_path.resolve(config.release, path);
           var image_resolved = node_url.resolve(cdn_domain, path);
 
-          function d (err) {
+          function d (err, resolved) {
             if (err) {
               hfs.cache.remove(image_source);
               return done(err);
             }
 
-            done(null);
+            done(null, resolved);
           }
 
           // Copy images into dest dir, including copies with encrypted filename
-          hfs.copy(image_source, image_dest, function (err, hash) {
+          hfs.stat(image_source, function (err, stat, hash) {
             if (err) {
               return d(err);
             }
