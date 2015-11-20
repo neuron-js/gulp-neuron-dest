@@ -12,6 +12,7 @@ var package_root = require('neuron-package-root');
 var hash_fs = require('hashed-fs');
 var PluginError = require('gulp-util').PluginError;
 
+Error.stackTraceLimit = Infinity;
 
 var root;
 function get_package_root (filepath, callback) {
@@ -80,8 +81,8 @@ function task (options) {
         filebase: config.dist,
         resolve: function(path){
           var done = this.async();
-          var image_source = node_url.resolve(config.dist, path);
-          var image_dest = node_url.resolve(config.release, path);
+          var image_source = node_path.resolve(config.dist, path);
+          var image_dest = node_path.resolve(config.release, path);
           var image_resolved = node_url.resolve(cdn_domain, path);
 
           function d (err) {
@@ -98,7 +99,7 @@ function task (options) {
             if (err) {
               return d(err);
             }
-            hash_fs.decorate(image_resolved, hash, d);
+            hfs.decorate(image_resolved, hash, d);
           });
         }
       }, function (err, content) {
