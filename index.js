@@ -61,23 +61,27 @@ function task (options) {
 
       var neuron_config_js = node_path.join(root, 'neuron.config.js');
       var config = require(neuron_config_js);
+
+      // TODO: use neuron-config-js to deal with absolute paths
+      config.dist = node_path.resolve(root, config.dist);
+      config.release = node_path.resolve(root, config.release);
       
       var extname = node_path.extname(filename);
-      var relative = node_path.relative(config.root, filename);
-      var dest = node_path.join(config.dest, relative);
+      var relative = node_path.relative(config.dist, filename);
+      var dest = node_path.join(config.release, relative);
 
       // Handle css files, absolutize css images
       if (extname !== '.css') {
         return hfs.copy(filename, dest, cb);
       }
-      
+
       absolutize(file.contents, {
         filename: filename,
-        filebase: config.root,
+        filebase: config.dist,
         resolve: function(path){
           var done = this.async();
-          var image_source = node_url.resolve(config.root, path);
-          var image_dest = node_url.resolve(config.dest, path);
+          var image_source = node_url.resolve(config.dist, path);
+          var image_dest = node_url.resolve(config.release, path);
           var image_resolved = node_url.resolve(cdn_domain, path);
 
           function d (err) {
