@@ -1,6 +1,6 @@
 {
   "name": "gulp-neuron-resources",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "gulp-neuron-resources",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,6 @@
     "gulp-util": "^3.0.7",
     "neuron-package-root": "^1.0.2",
     "through2": "^2.0.0",
-    "hashed-fs": "^1.1.0"
+    "hashed-fs": "^1.3.0"
   }
 }

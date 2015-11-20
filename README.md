@@ -11,7 +11,9 @@
 
 # gulp-neuron-resources
 
+Copy and encrypt static resources according to neuron.config.js of the project.
 
+This module is design to replace the `gulp.dest`.
 
 ## Install
 
@@ -22,7 +24,9 @@ $ npm install gulp-neuron-resources --save
 ## Usage
 
 ```js
-var neuron_resources = require('gulp-neuron-resources');
+var nr = require('gulp-neuron-resources');
+gulp.src('/path/to/style.css')
+  .pipe(nr());
 ```
 
 ## License
