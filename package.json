@@ -1,19 +1,20 @@
 {
-  "name": "gulp-neuron-resources",
+  "name": "gulp-neuron-dest",
   "version": "1.0.1",
-  "description": "gulp-neuron-resources",
+  "description": "The gulp.dest replacement for neuron.js",
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec ./test/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/neuron-js/gulp-neuron-resources.git"
+    "url": "git://github.com/neuron-js/gulp-neuron-dest.git"
   },
   "keywords": [
     "gulp",
     "task",
-    "neuron"
+    "neuron",
+    "dest"
   ],
   "engines": {
     "node": ">=0.10.0"
@@ -21,7 +22,7 @@
   "author": "neuron-js",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/neuron-js/gulp-neuron-resources/issues"
+    "url": "https://github.com/neuron-js/gulp-neuron-dest/issues"
   },
   "devDependencies": {
     "mocha": "*",
@@ -29,7 +30,6 @@
   },
   "dependencies": {
     "absolutize-css-resources": "^1.0.9",
-    "fs-extra": "^0.26.0",
     "gulp-util": "^3.0.7",
     "neuron-package-root": "^1.0.2",
     "through2": "^2.0.0",

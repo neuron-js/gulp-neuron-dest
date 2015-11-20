@@ -1,32 +1,32 @@
-[![Build Status](https://travis-ci.org/neuron-js/gulp-neuron-resources.svg?branch=master)](https://travis-ci.org/neuron-js/gulp-neuron-resources)
+[![Build Status](https://travis-ci.org/neuron-js/gulp-neuron-dest.svg?branch=master)](https://travis-ci.org/neuron-js/gulp-neuron-dest)
 <!-- optional npm version
-[![NPM version](https://badge.fury.io/js/gulp-neuron-resources.svg)](http://badge.fury.io/js/gulp-neuron-resources)
+[![NPM version](https://badge.fury.io/js/gulp-neuron-dest.svg)](http://badge.fury.io/js/gulp-neuron-dest)
 -->
 <!-- optional npm downloads
-[![npm module downloads per month](http://img.shields.io/npm/dm/gulp-neuron-resources.svg)](https://www.npmjs.org/package/gulp-neuron-resources)
+[![npm module downloads per month](http://img.shields.io/npm/dm/gulp-neuron-dest.svg)](https://www.npmjs.org/package/gulp-neuron-dest)
 -->
 <!-- optional dependency status
-[![Dependency Status](https://david-dm.org/neuron-js/gulp-neuron-resources.svg)](https://david-dm.org/neuron-js/gulp-neuron-resources)
+[![Dependency Status](https://david-dm.org/neuron-js/gulp-neuron-dest.svg)](https://david-dm.org/neuron-js/gulp-neuron-dest)
 -->
 
-# gulp-neuron-resources
+# gulp-neuron-dest
 
-Copy and encrypt static resources according to neuron.config.js of the project.
+The `gulp.dest` replacement for neuron.js solutions.
 
-This module is design to replace the `gulp.dest`.
+It copies and encrypts static resources according to neuron.config.js of the project.
 
 ## Install
 
 ```sh
-$ npm install gulp-neuron-resources --save
+$ npm install gulp-neuron-dest --save
 ```
 
 ## Usage
 
 ```js
-var nr = require('gulp-neuron-resources');
+var dest = require('gulp-neuron-dest');
 gulp.src('/path/to/style.css')
-  .pipe(nr());
+  .pipe(dest());
 ```
 
 ## License

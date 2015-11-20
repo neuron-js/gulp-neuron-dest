@@ -4,12 +4,13 @@ module.exports = task;
 
 var node_path = require('path');
 var node_url = require('url');
+var cryto = require('crypto');
 
 var through = require('through2');
 var absolutize = require('absolutize-css-resources');
 var package_root = require('neuron-package-root');
 var hash_fs = require('hashed-fs');
-var cryto = require('crypto');
+var PluginError = require('gulp-util').PluginError;
 
 
 var root;
@@ -34,7 +35,7 @@ function task (options) {
     function cb (err) {
       if (err) {
         var error = typeof err === 'string'
-          ? new PluginError('gulp-neuron-resources', err)
+          ? new PluginError('gulp-neuron-dest', err)
           : err;
         hfs.cache.remove(file.path);
         return callback(err);
