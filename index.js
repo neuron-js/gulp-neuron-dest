@@ -11,6 +11,7 @@ var absolutize = require('absolutize-css-resources');
 var nconfig = require('neuron-project-config');
 var hash_fs = require('hashed-fs');
 var PluginError = require('gulp-util').PluginError;
+var fs = require('fs');
 
 Error.stackTraceLimit = Infinity;
 
@@ -34,22 +35,38 @@ function get_project_config (filepath, callback) {
 
 
 var hash_fs_map = {}
-function create_hash_fs (cache_file) {
-  if (cache_file in hash_fs_map) {
-    return hash_fs_map[cache_file];
+function create_hash_fs (root) {
+  if (root in hash_fs_map) {
+    return hash_fs_map[root];
   }
 
-  var fs = hash_fs_map[cache_file] = hash_fs({
+  var cache_file = node_path.join(root, '.modified-cache');
+  var fs = hash_fs({
     cache_file: cache_file
   });
 
+  hash_fs_map[root] = fs;
   return fs;
 }
 
 
 process.on('exit', function () {
-  Object.keys(hash_fs_map).forEach(function (file) {
-    hash_fs_map[file].cache.saveSync();
+  Object.keys(hash_fs_map).forEach(function (root) {
+    var hfs = hash_fs_map[root];
+    hfs.cache.saveSync();
+
+    var md5_file = node_path.join(root, '.md5-cache');
+    var map = hfs.cache.map();
+    var file;
+    var relative;
+    var relative_map = {};
+
+    for (file in map) {
+      relative = node_path.relative(config.dist, file);
+      relative_map[relative] = map[file];
+    }
+
+    fs.writeFileSync(md5_file, JSON.stringify(relative_map, null, 2));
   });
 });
 
@@ -60,8 +77,8 @@ process.on('exit', function () {
 function task (options) {
   options = options || {};
 
-  var cache_file = options.cache_file;
-  var hfs = create_hash_fs(cache_file);
+  var cache_root = options.cache_root;
+  var hfs = create_hash_fs(cache_root);
   
   function copy (file, transform, callback) {
     function cb (err) {
@@ -104,7 +121,7 @@ function task (options) {
 
           // if cached, skip writeFile.
           if (cached) {
-            console.log('skipped: ' + filename)
+            console.log('skipped: ' + filename);
             return cb(null);
           }
 
