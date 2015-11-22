@@ -1,6 +1,6 @@
 {
   "name": "gulp-neuron-dest",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The gulp.dest replacement for neuron.js",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,7 @@
   "dependencies": {
     "absolutize-css-resources": "^1.0.9",
     "gulp-util": "^3.0.7",
-    "neuron-package-root": "^1.0.2",
+    "neuron-project-config": "^1.1.0",
     "through2": "^2.0.0",
     "hashed-fs": "^1.4.0"
   }

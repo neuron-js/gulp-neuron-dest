@@ -26,8 +26,11 @@ $ npm install gulp-neuron-dest --save
 ```js
 var dest = require('gulp-neuron-dest');
 gulp.src('/path/to/style.css')
-  .pipe(dest());
+  .pipe(dest(options));
 ```
+
+- **options** 
+  - **cache_file**: `path` if specified, the file in the cache will skip building. And the cache_file will be saved when process.exit();
 
 ## License
 

@@ -8,31 +8,62 @@ var cryto = require('crypto');
 
 var through = require('through2');
 var absolutize = require('absolutize-css-resources');
-var package_root = require('neuron-package-root');
+var nconfig = require('neuron-project-config');
 var hash_fs = require('hashed-fs');
 var PluginError = require('gulp-util').PluginError;
 
 Error.stackTraceLimit = Infinity;
 
-var root;
-function get_package_root (filepath, callback) {
+var config;
+function get_project_config (filepath, callback) {
   // suppose that during one buiding section,
   // the package root will be the same
-  if (root) {
-    return callback(root);
+  if (config) {
+    return callback(null, config);
   }
 
-  package_root(filepath, callback);
+  nconfig.read(filepath, function (err, c) {
+    if (err) {
+      return callback(err);
+    }
+
+    config = c;
+    callback(null, c);
+  });
 }
+
+
+var hash_fs_map = {}
+function create_hash_fs (cache_file) {
+  if (cache_file in hash_fs_map) {
+    return hash_fs_map[cache_file];
+  }
+
+  var fs = hash_fs_map[cache_file] = hash_fs({
+    cache_file: cache_file
+  });
+
+  return fs;
+}
+
+
+process.on('exit', function () {
+  Object.keys(hash_fs_map).forEach(function (file) {
+    hash_fs_map[file].cache.saveSync();
+  });
+});
 
 
 // @param {Object} options
 // - output_dir `path`
 // - compiler
 function task (options) {
-  function copy (file, transform, callback) {
-    var hfs = hash_fs();
+  options = options || {};
 
+  var cache_file = options.cache_file;
+  var hfs = create_hash_fs(cache_file);
+  
+  function copy (file, transform, callback) {
     function cb (err) {
       if (err) {
         var error = typeof err === 'string'
@@ -55,17 +86,10 @@ function task (options) {
     }
 
     var filename = file.path;
-    package_root(filename, function (root) {
-      if (!root) {
-        return cb('no neuron.config.js found.');
+    get_project_config(filename, function (err, config) {
+      if (err) {
+        return cb(err);
       }
-
-      var neuron_config_js = node_path.join(root, 'neuron.config.js');
-      var config = require(neuron_config_js);
-
-      // TODO: use neuron-config-js to deal with absolute paths
-      config.dist = node_path.resolve(root, config.dist);
-      config.release = node_path.resolve(root, config.release);
       
       var extname = node_path.extname(filename);
       var relative = node_path.relative(config.dist, filename);
@@ -80,6 +104,7 @@ function task (options) {
 
           // if cached, skip writeFile.
           if (cached) {
+            console.log('skipped: ' + filename)
             return cb(null);
           }
 
