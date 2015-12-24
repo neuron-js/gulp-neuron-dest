@@ -41,13 +41,28 @@ function create_hash_fs (root) {
   }
 
   var cache_file = node_path.join(root, '.modified-cache');
-  var fs = hash_fs({
+  var hfs = hash_fs({
     cache_file: cache_file
   });
 
+  var md5_file = node_path.join(root, '.md5-cache');
+  var cache = {}
+  var map = {}
+
+  try {
+    cache = JSON.parse(fs.readFileSync(md5_file).toString())
+  } catch(e) {
+    console.log('no md5 cache file found')
+  }
+
+  var file
+  for (file in cache){
+    map[node_path.join(config.dist, file)] = cache[file]
+  }
+
   var obj = hash_fs_map[root] = {
-    fs: fs,
-    map: {}
+    fs: hfs,
+    map: map
   }
   return obj;
 }
@@ -80,11 +95,6 @@ process.on('exit', function () {
 // - compiler
 function task (options) {
   options = options || {};
-
-  var cache_root = options.cache_root;
-  var obj = create_hash_fs(cache_root);
-  var hfs = obj.fs;
-  var map = obj.map;
   
   function copy (file, transform, callback) {
     function cb (err, hash) {
@@ -96,7 +106,7 @@ function task (options) {
         return callback(err);
       }
 
-      if (hash) {
+      if (hash && map) {
         map[filename] = hash;
       }
 
@@ -113,10 +123,16 @@ function task (options) {
     }
 
     var filename = file.path;
+    var map;
     get_project_config(filename, function (err, config) {
       if (err) {
         return cb(err);
       }
+
+      var cache_root = options.cache_root;
+      var obj = create_hash_fs(cache_root);
+      var hfs = obj.fs;
+      map = obj.map;
       
       var extname = node_path.extname(filename);
       var relative = node_path.relative(config.dist, filename);
@@ -130,7 +146,10 @@ function task (options) {
           }
 
           // if cached, skip writeFile.
-          if (cached && (filename in map)) {
+          if (cached 
+            // make sure the filename is not missing
+            && (filename in map)
+          ) {
             console.log('skipped: ' + filename);
             return cb(null);
           }
