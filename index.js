@@ -45,18 +45,22 @@ function create_hash_fs (root) {
     cache_file: cache_file
   });
 
-  hash_fs_map[root] = fs;
-  return fs;
+  var obj = hash_fs_map[root] = {
+    fs: fs,
+    map: {}
+  }
+  return obj;
 }
 
 
 process.on('exit', function () {
   Object.keys(hash_fs_map).forEach(function (root) {
-    var hfs = hash_fs_map[root];
+    var obj = hash_fs_map[root];
+    var hfs = obj.fs;
+    var map = obj.map;
     hfs.cache.saveSync();
 
     var md5_file = node_path.join(root, '.md5-cache');
-    var map = hfs.cache.map();
     var file;
     var relative;
     var relative_map = {};
@@ -78,16 +82,22 @@ function task (options) {
   options = options || {};
 
   var cache_root = options.cache_root;
-  var hfs = create_hash_fs(cache_root);
+  var obj = create_hash_fs(cache_root);
+  var hfs = obj.fs;
+  var map = obj.map;
   
   function copy (file, transform, callback) {
-    function cb (err) {
+    function cb (err, hash) {
       if (err) {
         var error = typeof err === 'string'
           ? new PluginError('gulp-neuron-dest', err)
           : err;
         hfs.cache.remove(file.path);
         return callback(err);
+      }
+
+      if (hash) {
+        map[filename] = hash;
       }
 
       callback(null);
@@ -120,7 +130,7 @@ function task (options) {
           }
 
           // if cached, skip writeFile.
-          if (cached) {
+          if (cached && (filename in map)) {
             console.log('skipped: ' + filename);
             return cb(null);
           }
