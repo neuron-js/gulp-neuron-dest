@@ -99,9 +99,6 @@ function task (options) {
   function copy (file, transform, callback) {
     function cb (err, hash) {
       if (err) {
-        var error = typeof err === 'string'
-          ? new PluginError('gulp-neuron-dest', err)
-          : err;
         hfs.cache.remove(file.path);
         return callback(err);
       }
@@ -113,25 +110,26 @@ function task (options) {
       callback(null);
     }
 
+    var hfs;
     var cdn_domain = process.env.NEURON_CDN_DOMAIN;
     if (!cdn_domain) {
-      return cb('env.NEURON_CDN_DOMAIN must be defined.');
+      return callback(new PluginError('gulp-neuron-dest', 'env.NEURON_CDN_DOMAIN must be defined.'));
     }
 
     if(file.isStream()){
-      return cb('streaming not supported');
+      return callback(new PluginError('gulp-neuron-dest', 'streaming not supported'));
     }
 
     var filename = file.path;
     var map;
     get_project_config(filename, function (err, config) {
       if (err) {
-        return cb(err);
+        return callback(err);
       }
 
       var cache_root = options.cache_root;
       var obj = create_hash_fs(cache_root);
-      var hfs = obj.fs;
+      hfs = obj.fs;
       map = obj.map;
       
       var extname = node_path.extname(filename);
