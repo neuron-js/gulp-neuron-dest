@@ -90,7 +90,7 @@ process.on('exit', function () {
 })
 
 
-var REGEX_PARSE_QUERY = /(.*?)(\?.*)?$/
+var REGEX_PARSE_QUERY = /(.*?)([\?#].*)?$/
 function parse_path (path) {
   var match = path.match(REGEX_PARSE_QUERY)
   return {
