@@ -42,7 +42,8 @@ function create_hash_fs (root) {
 
   var cache_file = node_path.join(root, '.modified-cache')
   var hfs = hash_fs({
-    cache_file: cache_file
+    cache_file: cache_file,
+    only_hashed: true
   })
 
   var md5_file = node_path.join(root, '.md5-cache')
