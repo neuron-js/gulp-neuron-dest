@@ -35,7 +35,9 @@ function get_project_config (filepath, callback) {
 
 
 var hash_fs_map = {}
-function create_hash_fs (root, options) {
+function create_hash_fs (options) {
+  var root = options.cache_root
+
   if (root in hash_fs_map) {
     return hash_fs_map[root]
   }
@@ -142,8 +144,7 @@ function task (options) {
         return callback(err)
       }
 
-      var cache_root = options.cache_root
-      var obj = create_hash_fs(cache_root, options)
+      var obj = create_hash_fs(options)
       hfs = obj.fs
       map = obj.map
 
