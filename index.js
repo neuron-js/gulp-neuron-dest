@@ -35,7 +35,7 @@ function get_project_config (filepath, callback) {
 
 
 var hash_fs_map = {}
-function create_hash_fs (root) {
+function create_hash_fs (root, options) {
   if (root in hash_fs_map) {
     return hash_fs_map[root]
   }
@@ -43,7 +43,7 @@ function create_hash_fs (root) {
   var cache_file = node_path.join(root, '.modified-cache')
   var hfs = hash_fs({
     cache_file: cache_file,
-    only_hashed: true
+    only_hashed: options.only_hashed
   })
 
   var md5_file = node_path.join(root, '.md5-cache')
@@ -106,6 +106,10 @@ function parse_path (path) {
 // - compiler
 function task (options) {
   options = options || {}
+  options.only_hashed = options.only_hashed
+    || options.only_hashed === undefined
+      ? true
+      : false
 
   function copy (file, transform, callback) {
     function cb (err, hash) {
@@ -139,7 +143,7 @@ function task (options) {
       }
 
       var cache_root = options.cache_root
-      var obj = create_hash_fs(cache_root)
+      var obj = create_hash_fs(cache_root, options)
       hfs = obj.fs
       map = obj.map
 
